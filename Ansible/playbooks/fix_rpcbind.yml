@@ -1,0 +1,48 @@
+---
+- name: Fix RPC Bind
+  hosts: rpc-node
+  become: yes
+  become_user: root
+  gather_facts: no
+  tasks:     
+     - name: Create Directory
+       file:
+         path: /etc/systemd/system/nfs-client.target.d
+         state: directory
+
+     - name: Copy The RPC Config
+       copy:
+         src: /home/sdnoansi/group_automation/eceare/files/10-rpcbind.conf
+         dest: /etc/systemd/system/nfs-client.target.d/10-rpcbind.conf
+
+     - name: Disable Rpcbind
+       systemd:
+         name: rpcbind
+         enabled: no
+
+     - name: Enable Rpcbind
+       systemd:
+         name: "{{ item }}"
+         enabled: yes
+       with_items:
+         - rpcbind
+         - glusterd.service
+
+     - name: Reboot
+       shell: "sleep 5 && reboot"
+       async: 300
+       poll: 0
+
+     - name: Wait For The Reboot To Complete
+       wait_for_connection:
+         connect_timeout: 20
+         sleep: 5
+         delay: 5
+         timeout: 300
+   
+     - name: Gluster Volume Check
+       command: gluster vol status
+       register: gluster
+
+     - debug:
+          var: gluster.stdout_lines       

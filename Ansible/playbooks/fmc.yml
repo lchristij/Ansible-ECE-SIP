@@ -1,0 +1,102 @@
+---
+- name: FMC Installation
+  hosts: traffic
+  become: yes
+  become_user: root
+  serial: 1 
+  order: sorted
+  tasks:
+    - name: Copy jboss-cli-client Jar File
+      copy:
+        src: /opt/jboss/bin/client/jboss-cli-client.jar
+        dest: /opt/ESA/lib/
+        remote_src: yes
+    
+    - name: Backup esapma File
+      copy:
+        src: /opt/ESA/bin/esapma 
+        dest: /opt/ESA/bin/esapma.orig
+        remote_src: yes
+        
+    - name: Add Line In esapma File
+      lineinfile:
+        dest: /opt/ESA/bin/esapma
+        line: 'add_class_path "$app_home/lib/jboss-cli-client.jar"'
+        insertafter: '^add_class_path \"\$app_home\/lib\/esa\.jar\"'
+    
+    - name: Restart esapma
+      systemd:
+        name: esa
+        state: restarted
+
+    - name: Copy FMC RPM
+      copy: 
+        src: /home/sdnoansi/group_automation/eceare/packages/att_fmc_rpm-{{ fmc_version }}.rpm
+        dest: /cluster/home/sw_deliveries/
+        
+    - name: Install FMC RPM
+      yum: 
+        name: /cluster/home/sw_deliveries/att_fmc_rpm-{{ fmc_version }}.rpm
+        state: present
+      async: 60
+      poll: 0
+      register: fmc_install
+      
+    - debug:
+        var: fmc_install
+      
+    - name: Wait For Install To Complete
+      pause:
+        seconds: 30
+        
+    - name: Verify Installed RPM
+      shell: rpm -qa | grep fmc_rpm-{{ fmc_version }}
+      register: fmc_rpm_output
+    
+    - debug:
+        var: fmc_rpm_output.stdout_lines
+      
+    - name: Component Healthcheck
+      shell: component -dp=DP-NGIN-JBOSS-Traffic check_health
+      register: component_hc
+
+    - debug: 
+        var: health_check_ngin_jboss.stdout_lines
+
+    - name: ESA Counter Files Ownership change
+      file:
+        path: /opt/ESA/conf/{{ item }}
+        state: file
+        owner: root
+        group: esa
+        mode: '0644'        
+      with_items:
+        - pmCounters/fmc.PmCounters.xml
+        - pmCounters/fmc.Counters.xml
+        - pmJobs/fmc.PmJob.xml
+        
+    - name: Read Counter
+      shell: pmreadcounter | grep -i FMC
+      register: fmc_counter
+
+    - debug:
+        var: fmc_counter.stdout_lines        
+    
+    - name: Copy Logging Config Script
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/scripts/{{ item }}
+        dest: /var/tmp/
+      with_items:
+        - fmc_logging.sh
+        - fmc_db.sql
+    
+    - name: Executing FMC Logging Config Script
+      shell: sh /var/tmp/fmc_logging.sh > /var/tmp/fmc.log
+
+- name: Run DB script
+  hosts: primary-traffic
+  become: yes
+  become_user: root
+  tasks:
+    - name: Execute FMC DB Script
+      shell: mysqlclient < /var/tmp/fmc_db.sql

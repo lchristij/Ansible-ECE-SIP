@@ -1,0 +1,93 @@
+---
+- name: Setup for Upgrade
+  hosts: primary-traffic
+  become: yes
+  become_user: root
+  tasks:
+    - name: Create ECE patch directory
+      file: 
+        path: /cluster/ece_patches
+        state: directory
+      tags:
+      - prep
+        
+    - name: Copy the package
+      unarchive:
+        src: /home/sdnoansi/group_automation/eceare/packages/{{ package_name }}
+        dest: /cluster/ece_patches
+      tags:
+      - prep
+      
+    - name: Create directory
+      file:
+        path: /cluster/{{ item }}
+        state: directory
+      with_items:
+        - ece-patch-tool
+        - ece_patches/repo/packages
+      tags:
+      - prep
+      
+    - name: Move rpms 
+      shell: mv /cluster/ece_patches/rpms/*.rpm /cluster/ece_patches/repo/packages/ 
+      tags:
+      - prep
+      
+- name: Apply the upgrade pactches 
+  hosts: ece
+  become: yes
+  become_user: root
+  tasks:
+    - name: Apply setup rpms
+      yum: 
+        name: /cluster/ece_patches/repo/packages/{{ item }}        
+        state: present
+      loop:
+        - ece-patch-tool-1.1.0.rpm 
+          #        - markupsafe-0.23.rpm
+          #        - jinja-2.8.1.rpm
+          #        - ansible-2.2.1.0.rpm
+      tags:
+      - prep
+
+- name: Apply the upgrade pactches 
+  hosts: primary-traffic
+  become: yes
+  become_user: root
+  tasks:
+    - name: Check yum repo
+      shell: /cluster/ece-patch-tool/check-yum
+      register: check_yum
+      tags:
+      - prep
+    
+    - debug:
+        var: check_yum.stdout_lines
+      tags:
+      - prep
+      
+    - name: Check patch environment
+      shell: /cluster/ece-patch-tool/check-ece-patch-env
+      register: check_patch_env
+      tags:
+      - prep
+    
+    - debug:
+        var: check_patch_env.stdout_lines
+      tags:
+      - prep
+      
+    - name: Perform upgrade
+      command: ece-patch patch -i "{{ patch_version }}"
+    
+    - name: Hotfix
+      command:  ece-patch patch -i "{{ hotfix_version }}"
+      tags:
+      - hotfix
+    
+    - name: Verify teh version
+      shell: ece-version
+      register: ece_version
+    
+    - debug: 
+        var: ece_version.stdout_lines

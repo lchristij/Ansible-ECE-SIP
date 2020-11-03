@@ -1,0 +1,40 @@
+---
+- name: CALLREDIRECT API PROVISIONING UNDEPLOY
+  hosts: frontend
+  become: yes
+  become_user: root
+  tasks:
+    - name: Undeploy CallRedirectProvisioning
+      shell: /opt/jboss/bin/jboss-cli.sh --controller=:26802 -c --commands='undeploy CallRedirectProvisioning.ear'
+
+    - name: Restart JBOSS
+      systemd:
+        state: restarted
+        name: DP-NGIN-JBOSS-BM
+
+    - name: Create tempfile for log tailing
+      tempfile:
+        state: file
+      register: tempfile
+      
+    - name: Asynchronous tail log to temp file 
+      shell: tailf /var/lib/jboss/domains/DP-NGIN-JBOSS-BM_{{ ansible_host }}/log/server.log | grep --line-buffered "JBAS015874" >> {{ tempfile.path }}
+      async: 300
+      poll: 0
+      
+    - name: Wait for regex in log
+      wait_for:
+        path: "{{ tempfile.path }}"
+        search_regex: 'JBAS015874'
+
+    - name: Remove tempfile
+      file:
+        path: "{{ tempfile.path }}"
+        state: absent
+    
+    - name: Component Healthcheck
+      command: component check_health -dp=DP-NGIN-JBOSS-BM
+      register: component_hc
+      
+    - debug:
+        var: component_hc.stdout_lines

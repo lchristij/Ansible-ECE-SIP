@@ -1,0 +1,7 @@
+[ece-patch]
+bandwidth = 0
+baseurl = file:///cluster/ece_patches/repo
+cache = 0
+enabled=1
+gpgcheck=0
+gpgkey=file:///cluster/ece-patch-tool/ece_public.key

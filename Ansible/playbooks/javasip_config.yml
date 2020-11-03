@@ -1,0 +1,98 @@
+---
+- name: IPV6 SIP Channels Configurations
+  hosts: primary-controller
+  become: yes
+  become_user: root
+  gather_facts: no
+  tasks:
+    - name: Create Javasip Config Directory
+      file:
+        path: /cluster/home/javasip_config/
+        state: directory
+
+    - name: Fetch Javasip Config From SIP Stack
+      shell: "/bin/cm-cli get --key=SEP/ece/18.3/DP-NGIN-JBOSS-Traffic/JavaSip/javasip.configuration > /cluster/home/javasip_config/javasip.configuration.ORIG"
+
+    - name: Copy The Updated Javasip Config File
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/files/javasip_DNS_MTU_configuration.xml
+        dest: /cluster/home/javasip_config/javasip.configuration
+
+    - name: Copy Script To Traffic Servers
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/scripts/set_javasip.sh
+        dest: /cluster/home/javasip_config/
+        mode: '0755'
+
+    - name: Upload Updated Javasip Config to SIP Stack
+      shell: sh /cluster/home/javasip_config/set_javasip.sh
+
+- name: Javasip and Jboss Config
+  hosts: traffic
+  become: yes
+  become_user: root
+  gather_facts: no
+  tasks:
+    - name: Restart
+      systemd:
+        name: DP-NGIN-JBOSS-Traffic
+        state: restarted
+
+    - name: Check New Port
+      shell: netstat -tulpn| grep 5060
+      register: port_5060
+
+    - debug:
+        var: port_5060.stdout_lines
+
+    - name: De-Register SIP Traffic IP
+      shell: echo y | sd-cli deregister --id=sip-traffic
+
+    - name: Copy Script
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/scripts/register_sip.sh
+        dest: /var/tmp/
+        mode: '0755'
+
+    - name: Register SIP Traffic IP
+      shell: sh /var/tmp/register_sip.sh
+
+    - name: Check The Port Binding
+      shell: sd-cli list| grep 5060
+
+    - name: Update Interface to localhost4 In Standalone File
+      replace:
+        path: /var/lib/jboss/domains/DP-NGIN-JBOSS-Traffic_{{ ansible_host }}/configuration/standalone.xml
+        regexp: 'value="localhost"'
+        replace: 'value="localhost4"'
+
+    - name: Copy Script For IPv6 Preference & IgnoreUserParameter
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/scripts/set_properties.sh
+        dest: /var/tmp/
+
+    - name: Set IPv6 Preference & IgnoreUserParameter
+      shell: sh /var/tmp/set_properties.sh > /var/tmp/set_properties.log
+
+    - name: Print The Updated Configuration
+      shell: /usr/lib/jboss/jvm-args list --dp=DP-NGIN-JBOSS-Traffic
+      register: arguments
+
+    - debug:
+        var: arguments.stdout_lines
+
+- name: DNS Config
+  hosts: ece
+  become: yes
+  become_user: root
+  gather_facts: no
+  tasks:
+    - name: Customized DNS Configuration
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/files/customized_dns.json
+        dest: /etc/consul.d/customized_dns.json
+
+    - name: Restart Consul Service
+      systemd:
+        name: rda.consul.service
+        state: restarted

@@ -1,0 +1,159 @@
+---
+- name: CALLREDIRECT Installation
+  hosts: traffic
+  become: yes
+  become_user: root
+  serial: 1
+  order: sorted
+  tasks:
+    - name: Create Directory
+      file:
+        path: /var/ericsson/log/callredirect/{{ item }}
+        state: directory
+        mode: '0775'
+        owner: oam
+        group: oam
+      with_items:
+        - /var/ericsson/log/callredirect/finished
+        - /var/ericsson/log/callredirect/work
+        - /var/ericsson/log/finished
+        - /var/ericsson/log/work
+
+    - name: Create Directory
+      file:
+        path: /opt/jboss/modules/org/{{ item }}
+        state: directory
+      with_items: 
+        - eclipse/persistence/main
+        - apache/ant/main
+        
+    - name: Copy Callredirect packages
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/packages/{{ item }}
+        dest: /cluster/home/sw_deliveries/
+      with_items:
+        - eclipselink-2.6.2.jar
+        - ant-1.8.2.jar
+        - callredirect-rpm-{{ callredirect_version }}.rpm
+
+    - name: Copy Eclipselink Jar
+      copy:
+        src: /cluster/home/sw_deliveries/eclipselink-2.6.2.jar
+        dest: /opt/jboss/modules/org/eclipse/persistence/main/
+        remote_src: yes        
+        
+    - name: Copy Configuration
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/files/eclipse_module.xml
+        dest: /opt/jboss/modules/org/eclipse/persistence/main/module.xml
+        owner: jboss
+        group: jboss
+
+    - name: Copy ANT Jar
+      copy:
+        src: /cluster/home/sw_deliveries/ant-1.8.2.jar 
+        dest: /opt/jboss/modules/org/apache/ant/main
+        remote_src: yes        
+        
+    - name: Copy Configuration
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/files/ant_module.xml
+        dest: /opt/jboss/modules/org/apache/ant/main/module.xml
+        owner: jboss
+        group: jboss
+
+    - name: Install Callredirect RPM
+      yum: 
+        name: /cluster/home/sw_deliveries/callredirect-rpm-{{ callredirect_version }}.rpm
+        state: present
+
+    - name: Component HealthCheck
+      command: component check_health -dp=DP-NGIN-JBOSS-Traffic
+      register: health_check_ngin_jboss
+    
+    - debug: 
+        var: health_check_ngin_jboss.stdout_lines
+
+    - name: Change ESA Counter File Ownership
+      file:
+        path: "{{ item }}"
+        owner: root
+        group: esa
+        mode: '0644'        
+      with_items:
+        - /opt/ESA/conf/pmCounters/callredirect.PmCounters.xml
+        - /opt/ESA/conf/pmCounters/callredirect.Counters.xml
+        - /opt/ESA/conf/pmJobs/callredirect.PmJob.xml
+
+    - name: Restart ESA
+      systemd:
+        name: esa
+        state: restarted
+    
+    - name: PmCounters log
+      shell: pmreadcounter | grep -i callredir
+      register: pmcounter_log
+      
+    - debug:
+        var: pmcounter_log.stdout_lines
+        
+    - name: Copy Logging & DB Config Script
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/scripts/{{ item }}
+        dest: /var/tmp/
+      with_items:
+        - callredirect_logging.sh
+        - callredirect_db.sql
+      
+    - name: Set Callredirect Logging
+      shell: sh /var/tmp/callredirect_logging.sh > /var/tmp/callredirect.log
+    
+- name: Callredirect Configuration
+  hosts: primary-traffic
+  become: yes
+  become_user: root
+  tasks:    
+    - name: Backup SentinelServersConfig File
+      copy:
+        src: /cluster/home/callredirect/SentinelServersConfig.json 
+        dest: /cluster/home/callredirect/SentinelServersConfig.json_1.0.4_template
+        remote_src: yes
+    
+    - name: Copy SentinelServersConfig File
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/files/SentinelServersConfig.json
+        dest: /cluster/home/callredirect/SentinelServersConfig.json
+        owner: oam
+        group: oam
+        mode: '0644'        
+
+    - name: Backup NumberNormalization Config
+      copy:
+        src: /cluster/home/callredirect/NumberNormalization_config.xml
+        dest: /cluster/home/callredirect/NumberNormalization_config.xml_orig
+        remote_src: yes
+
+    - name: Update NumberNormalization Config
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/files/NumberNormalization_config.xml
+        dest: /cluster/home/callredirect/NumberNormalization_config.xml
+        owner: oam
+        group: oam
+        mode: '0644'        
+
+    - name: Backup CallRedirect Config
+      copy:
+        src: /cluster/home/callredirect/CallRedirect_config.xml
+        dest: /cluster/home/callredirect/CallRedirect_config.xml_orig
+        remote_src: yes
+
+    - name: Update CallRedirect Config
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/files/CallRedirect_config.xml
+        dest: /cluster/home/callredirect/CallRedirect_config.xml		
+        owner: oam
+        group: oam
+        mode: '0644'
+
+    - name: Callredirect DB COnfiguration
+      shell: mysqlclient < /var/tmp/callredirect_db.sql 

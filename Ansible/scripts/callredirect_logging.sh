@@ -1,0 +1,10 @@
+#/bin/bash
+/opt/jboss/bin/jboss-cli.sh --controller=:27802 -c --command='/subsystem=datasources/data-source=jdbc_callRedirectRead:read-resource(recursive=true)'
+/opt/jboss/bin/jboss-cli.sh --controller=:27802 -c --command='/subsystem=datasources/data-source=jdbc_callRedirectWrite:read-resource(recursive=true)'
+/opt/jboss/bin/jboss-cli.sh --controller=:27802 -c --command='/subsystem=datasources/data-source=jdbc_read_callredirect:read-resource(recursive=true)'
+/opt/jboss/bin/jboss-cli.sh --controller=:27802 -c --command='data-source test-connection-in-pool --name=jdbc_callRedirectRead'
+/opt/jboss/bin/jboss-cli.sh --controller=:27802 -c --command='data-source test-connection-in-pool --name=jdbc_callRedirectWrite'
+/opt/jboss/bin/jboss-cli.sh --controller=:27802 -c --command='data-source test-connection-in-pool --name=jdbc_read_callredirect'
+/opt/jboss/bin/jboss-cli.sh --controller=:27802 -c --command='/subsystem=logging/logger=com.ericsson.egi.att.callredirect:add'
+/opt/jboss/bin/jboss-cli.sh --controller=:27802 -c --command='/subsystem=logging/logger=com.ericsson.egi.att.callredirect:write-attribute(name=level,value=ALL)'
+/opt/jboss/bin/jboss-cli.sh --controller=:27802 -c --command='/subsystem=logging/logger=com.ericsson.egi.att.callredirect:read-attribute(name=level)'

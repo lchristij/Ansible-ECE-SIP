@@ -1,0 +1,166 @@
+---
+ - name: Increase ESA Memory
+   hosts: ece
+   become: yes
+   become_user: root
+   tasks:
+     - name: Increase ESA Memory
+       shell: bash -c 'sed -i 's/128/512/g' /opt/ESA/bin/*.vmoptions'
+
+     - name: Enable ECE System Counters
+       copy:
+         src: /home/sdnoansi/group_automation/eceare/files/{{ item.name }}
+         dest: /opt/ESA/conf/{{ item.path }}
+         owner: root
+         group: esa
+         mode: '0644'
+       with_items:
+         - { name: 'ece-system-counters.xml', path: 'pmCounters' }
+         - { name: 'ece-system.PmJob.xml', path: 'pmJobs' }
+
+     - name: Restart ESA
+       systemd:
+           state: restarted
+           name: esa               
+
+##Enable Java Counters
+
+ - name: Enable Java Counters
+   hosts: traffic
+   become: yes
+   become_user: root
+   tasks:
+     - name: Enable Java Counters
+       command: python -m rda_esa_config.activate_pm_counter activate DP-NGIN-JBOSS-Traffic
+
+     - name: Create JVMJob
+       copy:
+         src: /home/sdnoansi/group_automation/eceare/files/JVMJob.xml
+         dest: /opt/ESA/conf/pmJobs/
+         owner: root
+         group: esa
+         mode: '0644'
+
+ - name: Enable Java Counters
+   hosts: frontend
+   become: yes
+   become_user: root
+   tasks:
+     - name: Enable Java Counters
+       command: python -m rda_esa_config.activate_pm_counter activate  DP-NGIN-JBOSS-BM
+
+     - name: Counters
+       command: pmreadcounter 
+       register: pmreadcounter_traffic
+
+     - debug:
+          var: pmreadcounter_traffic.stdout_lines
+
+     - name: Counters
+       command: pmreadcounter 
+       register: pmreadcounter_bm
+
+     - debug:
+          var: pmreadcounter_bm.stdout_lines
+
+## JavaSip Counters
+#In all ngin nodes as root user:
+ - name: Enable JAVASIP Counters
+   hosts: traffic
+   become: yes
+   become_user: root
+   tasks:
+
+     - name: Enable JAVASIP Counters
+       copy:
+         src: /home/sdnoansi/group_automation/eceare/files/{{ item.name }}
+         dest: /opt/ESA/conf/{{ item.path }}
+         owner: root
+         group: esa
+         mode: '0644'
+       with_items:
+         - { name: 'javasip.PmCounters.xml', path: 'pmCounters' }
+         - { name: 'javasip.PmJob.xml', path: 'pmJobs' }
+         - { name: 'fmc.PmJob.xml', path: 'pmJobs' }         
+         - { name: 'callredirect.PmJob.xml', path: 'pmJobs' }
+         - { name: 'oah.PmJob.xml', path: 'pmJobs' }             
+           
+     - name: restart
+       systemd:
+         state: restarted
+         name: esa
+
+     - name: grep
+       command: pmreadcounter
+       register: sip_counter
+
+     - debug:
+         var: sip_counter.stdout_lines
+
+### Disable SS7 service
+ - name: Disable SS7 Services On BM Node
+   hosts: frontend 
+   become: yes
+   become_user: root
+   tasks:
+     - name: List ss7 in sd-cli
+       command: sd-cli list | grep "ss7"
+       register: ss7_sd_cli
+       
+     - debug:
+         var: ss7_sd_cli.stdout_lines
+
+     - name: Stop SS7 Services
+       systemd:
+         state: stopped
+         enabled: no
+         name: "{{ item }}"
+       with_items:
+         - ss7ec
+         - ss7-3smd
+         - ss7-statistics-poller
+         - tcapMonitor
+
+     - name: De-Register SS7 Services
+       command: sd-cli deregister --id={{ item }}
+       with_items:
+         - ss7ec
+         - ss7-3sm
+         - ss7-fe-1-sigtran-1
+         - ss7-fe-2-sigtran-1
+         - ss7-stp-1-sigtran-1
+         - ss7-stp-2-sigtran-1
+
+ - name: Disable SS7 Service on Traffic Node
+   hosts: backend 
+   become: yes
+   become_user: root
+   tasks:
+     - name: Stop SS7 Service in ngin-3&ngin-4
+       systemd:
+         state: stopped
+         enabled: no
+         name: ss7ec
+
+ - name: Disable CM GUI
+   hosts: mysqlmgm 
+   become: yes
+   become_user: root
+   tasks:
+     - name: Check CM GUI In sd-cli List
+       command: sd-cli list | grep "cm-gui"
+     
+     - name: Check Port Status
+       command: netstat -tulpn | grep 27150
+
+     - name: Stop CM GUI Service
+       systemd:
+         state: stopped
+         enabled: no
+         name: DP-CM-GUI
+
+     - name: De-Register CM-GUI
+       command: sd-cli deregister --id=app.srv.cm-gui
+
+     - name: De-Register CM-GUI
+       command: sd-cli deregister --id=app.srv.cm-gui.ext

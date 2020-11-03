@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmCntGroup xmlns:esa="http://www.ericsson.com/esa" xmlns="http://www.ericsson.com/esa" active="yes">
+    <identification>
+        <groupId>ECE-System-Counters</groupId>
+    </identification>
+    <cntDefinition active="yes" activeSnmp="yes" cntType="Gauge">
+        <identification>
+            <counterId>srSystemCPUUsage</counterId>
+        </identification>
+        <description>
+            <counterDescr>System CPU Usage</counterDescr>
+            <counterInfo>
+                            The total usage of all CPUs in the system over the
+                            last sysresUpdateInterval, expressed as a percentage.
+                            The sysresUpdateInterval is the interval (in seconds)
+                            at which the subagent updates the system metrics,
+                            default - 20 seconds.
+                        </counterInfo>
+        </description>
+        <dataSource interval="20">
+            <snmp>
+                <agentIP>localhost</agentIP>
+                <agentPort>7161</agentPort>
+                <agentComStr>SNOS-PE</agentComStr>
+                <oid>.1.3.6.1.4.1.1977.9.1.29.0</oid>
+            </snmp>
+        </dataSource>
+    </cntDefinition>
+    <cntDefinition active="yes" activeSnmp="yes" cntType="Gauge">
+        <identification>
+            <counterId>srSystemMemoryInUse</counterId>
+        </identification>
+        <description>
+            <counterDescr>System Memory Usage</counterDescr>
+            <counterInfo>
+                            The total physical memory in use in kB (1000 bytes).
+                        </counterInfo>
+        </description>
+        <dataSource interval="20">
+            <snmp>
+                <agentIP>localhost</agentIP>
+                <agentPort>7161</agentPort>
+                <agentComStr>SNOS-PE</agentComStr>
+                <oid>.1.3.6.1.4.1.1977.9.1.3.0</oid>
+            </snmp>
+        </dataSource>
+    </cntDefinition>
+    <cntDefinition active="yes" activeSnmp="yes" cntType="Gauge">
+        <identification>
+            <counterId>srSystemFreeMem</counterId>
+        </identification>
+        <description>
+            <counterDescr>System Memory Free</counterDescr>
+            <counterInfo>
+                            The amount of free memory in kB (1000 bytes).
+                        </counterInfo>
+        </description>
+        <dataSource interval="20">
+            <snmp>
+                <agentIP>localhost</agentIP>
+                <agentPort>7161</agentPort>
+                <agentComStr>SNOS-PE</agentComStr>
+                <oid>.1.3.6.1.4.1.1977.9.1.36.0</oid>
+            </snmp>
+        </dataSource>
+    </cntDefinition>
+    <cntDefinition active="yes" activeSnmp="yes" cntType="Gauge">
+        <identification>
+            <counterId>srSystemDiskInUse</counterId>
+        </identification>
+        <description>
+            <counterDescr>System Disk Usage</counterDescr>
+            <counterInfo>
+                            The used storage of all hard drives on the system in
+                            MiB (1048576 byte blocks).
+                        </counterInfo>
+        </description>
+        <dataSource interval="20">
+            <snmp>
+                <agentIP>localhost</agentIP>
+                <agentPort>7161</agentPort>
+                <agentComStr>SNOS-PE</agentComStr>
+                <oid>.1.3.6.1.4.1.1977.9.1.32.0</oid>
+            </snmp>
+        </dataSource>
+    </cntDefinition>
+    <cntDefinition active="yes" activeSnmp="yes" cntType="Gauge">
+        <identification>
+            <counterId>srSystemDiskSize</counterId>
+        </identification>
+        <description>
+            <counterDescr>System Disk Size</counterDescr>
+            <counterInfo>
+                            The total size of all hard drives on the system in
+                            MiB (1048576 byte blocks).
+                        </counterInfo>
+        </description>
+        <dataSource interval="20">
+            <snmp>
+                <agentIP>localhost</agentIP>
+                <agentPort>7161</agentPort>
+                <agentComStr>SNOS-PE</agentComStr>
+                <oid>.1.3.6.1.4.1.1977.9.1.31.0</oid>
+            </snmp>
+        </dataSource>
+    </cntDefinition>
+    <cntDefinition active="yes" activeSnmp="yes" cntType="Gauge">
+        <identification>
+            <counterId>systemUptime</counterId>
+        </identification>
+        <description>
+            <counterDescr>System Uptime</counterDescr>
+            <counterInfo>
+                            The time elapsed since the last (re)boot in seconds.
+                            Contents of the uptime.sh script:
+                            #!/bin/sh
+                            cat /proc/uptime | awk '{ split($1,a,"."); print (a[1]) }'
+                        </counterInfo>
+        </description>
+        <dataSource interval="20">
+            <script>
+                <location>/opt/ESA/conf/pmCounters/uptime.sh</location>
+            </script>
+        </dataSource>
+    </cntDefinition>
+</pmCntGroup>

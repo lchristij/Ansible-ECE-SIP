@@ -1,0 +1,63 @@
+---
+- name: Deploy Approuter
+  hosts: traffic
+  become: yes
+  become_user: root
+  serial: 1
+  order: sorted
+  tasks:
+    - name: Create Software Directory
+      file:
+        path: /cluster/home/sw_deliveries
+        state: directory
+        
+    - name: Copy Package
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/packages/sip-service-selector-CXPN1-1040105Ux-{{ approuter_version }}.rpm
+        dest: /cluster/home/sw_deliveries
+     
+    - name: Create Software Directory
+      file:
+        path: /cluster/att
+        state: directory      
+
+    - name: Copy SIP Approuter JAR File To /cluster/att
+      copy: 
+        src: /home/sdnoansi/group_automation/eceare/packages/SipAppSelectorAR-{{ approuter_version }}.jar
+        dest: /cluster/att/
+        
+    - name: Install Approuter RPM
+      yum: 
+        name: /cluster/home/sw_deliveries/sip-service-selector-CXPN1-1040105Ux-{{ approuter_version }}.rpm
+        state: present
+        
+    - name: Check Updated Version
+      shell: component list| grep -i sipapprouter
+      register: component_output
+    
+    - debug:
+        var: component_output.stdout_lines
+
+    - name: Wait For Jboss Traffic to Start
+      pause: 
+        minutes: 5
+        prompt: "Wait for JBOSS to start. Press RETURN to continue"
+
+    - name: Logging Configurations
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/scripts/{{ item }}
+        dest: /var/tmp/
+      with_items:
+        - approuter_logging.sh
+        - approuter_db.sql
+      
+    - name: set logging
+      shell: sh /var/tmp/approuter_logging.sh > /var/tmp/approuter_logging.log
+            
+- name: Deploy ECE 
+  hosts: primary-traffic
+  become: yes
+  become_user: root
+  tasks: 
+    - name: SIPApprouter DB configuration
+      shell: mysqlclient < /var/tmp/approuter_db.sql

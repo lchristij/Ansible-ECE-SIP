@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns3:configuration xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns3="http://www.ericsson.com/javaoam/1.0">
+  <beans path="JavaSip">
+        <bean name="JavaSip" className="JavaSip">
+            <attribute name="javaSipId">
+               <value xsi:type="xs:string">1</value>
+            </attribute>
+        </bean>
+         <!--
+            The class JavaSipContainer is used for container specific configuration.
+             Refer to JavaSIP Managed Object Model documentation for additional container properties.
+         -->
+         <bean parentFieldName="javaSipContainerId" name="container,JavaSip" className="JavaSipContainer">
+             <attribute name="javaSipContainerId">
+                 <value xsi:type="xs:string">1</value>
+             </attribute>
+            <attribute name="maxTransmissionUnitSize">
+                <value xsi:type="xs:int">5120</value>
+            </attribute>
+             <!--
+                NonNegativeInteger32[0..1]
+                 noNotification
+                 This attribute specifies the TCP connection channel idle state timeout in seconds.
+                 If this attribute is not defined, the container will use default value as 60 (seconds).
+                 Update of the attribute's value on runtime requires restarting of JavaSIP container.
+             <attribute name="tcpChannelIdleStateTimeout">
+                 <value xsi:type="xs:int">60</value>
+             </attribute>
+             -->
+         </bean>
+
+        <!--
+            The class JavaSipDns stores and handles the Domain Name System (DNS) function in JavaSIP.
+         -->
+         <bean parentFieldName="javaSipDnsId" name="dns,JavaSip" className="JavaSipDns">
+             <attribute name="javaSipDnsId">
+                 <value xsi:type="xs:string">1</value>
+             </attribute>
+             <!--
+                PositiveInteger[0..1]
+                 noNotification
+                 This attribute defines the time in second between pings sent to the DNS server.
+                 It is only valid when all servers are in the down state
+                 The default value is 5.
+             <attribute name="allDownPingInterval">
+                <value xsi:type="xs:int">5</value>
+             </attribute>
+             -->
+             <!--
+                PositiveInteger[0..1]
+                 noNotification
+                 This attribute defines the size of the cache for DNS queries.
+                 The default size is 20000.
+             <attribute name="dnsCacheSize">
+                <value xsi:type="xs:int">20000</value>
+             </attribute>
+             -->
+             <!--
+                string[0..1]
+                 noNotification
+                 This attribute defines the outgoing IP address for dnsjava requests from all nodes.
+                 If not set, the default routing (Linux) is used. The address can be defined per cluster or node.
+             <attribute name="dnsOutgoingIP">
+                <value xsi:type="xs:string">DUMMY</value>
+             </attribute>
+             -->
+             <!--
+                PositiveInteger[0..1]
+                 noNotification
+                 It defines the maximum number of ping attempts sent to the DNS server to determine unreachable.
+                 The default value is 2.
+             <attribute name="dnsPingAttemptThreshold">
+                <value xsi:type="xs:int">2</value>
+             </attribute>
+             -->
+             <!--
+                PositiveInteger[0..1]
+                 noNotification
+                 This attribute defines the time in second between pings, sent to the DNS server.
+                 The default value is 30.
+             <attribute name="dnsPingInterval">
+                <value xsi:type="xs:int">30</value>
+             </attribute>
+             -->
+             <!--
+                string[0..1]
+                 noNotification
+                 This attribute defines the DNS entry that is used for DNS queries.
+                 The default is "."
+             <attribute name="dnsPingQuery">
+                <value xsi:type="xs:string">.</value>
+             </attribute>
+             -->
+             <!--
+                string
+                 mandatory
+                 noNotification
+                 This attribute defines the servers that are available using DNS queries.
+                 Multiple servers are provided using a comma (",") separated list. The syntax
+                 definition can be described as follows:
+
+                dnserverList=dnsServer[,dnsServer]*
+
+                dnsServer = dns_server_host[:dns_server_port]
+                 dns_server_host = hostname | IPv4address | IPv6reference
+                 ipv6reference = "[" IPv6address "]"
+
+                When the server address is a IPv6 address, it must be quoted using simple brakets "[" and "]".
+                 When the server port is not provided, the default port 53 is used.
+             -->
+             <attribute name="dnsServerList">
+                 <value xsi:type="xs:string">135.21.71.132</value>
+             </attribute>
+             <!--
+                string
+                 key
+                 mandatory
+                 noNotification
+                 restricted
+                 This attribute defines the identity of the JavaSipDns instance.
+             -->
+             <attribute name="javaSipDnsId">
+                 <value xsi:type="xs:string">EceJavaSipDns</value>
+             </attribute>
+         </bean>
+        <bean parentFieldName="javaSipServiceId" name="service,JavaSip" className="JavaSipService">
+            <attribute name="javaSipServiceId">
+               <value xsi:type="xs:string">1</value>
+            </attribute>
+        </bean>
+        <bean parentFieldName="javaSipListenerId" name="JavaSipListenerExternal,service,JavaSip" className="JavaSipListener">
+            <attribute name="javaSipListenerId">
+               <value xsi:type="xs:string">JavaSipListenerExternal</value>
+            </attribute>
+            <attribute name="address">
+               <value xsi:type="xs:string">@ethernet(eth2;IPv6;GLOBAL)</value>
+            </attribute>
+            <attribute name="port">
+               <value xsi:type="xs:int">5060</value>
+            </attribute>
+            <attribute name="transport">
+               <value xsi:type="xs:string">udp_tcp</value>
+            </attribute>
+         </bean>
+         <bean parentFieldName="javaSipListenerId" name="JavaSipsListenerExternal,service,JavaSip" className="JavaSipListener">
+                <attribute name="javaSipListenerId">
+                   <value xsi:type="xs:string">JavaSipsListenerExternal</value>
+                </attribute>
+                <attribute name="address">
+                   <value xsi:type="xs:string">@ethernet(eth1;IPv4)</value>
+                </attribute>
+                <attribute name="port">
+                   <value xsi:type="xs:int">5061</value>
+                </attribute>
+                <attribute name="transport">
+                   <value xsi:type="xs:string">tls</value>
+                </attribute>
+          </bean>
+  </beans>
+  <beans path="JavaSipSys">
+    <bean name="JavaSipSys" className="JavaSipSys">
+        <attribute name="javaSipSysId">
+            <value xsi:type="xs:string">1</value>
+        </attribute>
+    </bean>
+    <bean name="ssr,JavaSipSys" parentFieldName="javaSipSsrId" className="JavaSipSsr">
+        <attribute name="javaSipSsrId">
+            <value xsi:type="xs:string">1</value>
+        </attribute>
+        <attribute name="ssrEnabled">
+            <value xsi:type="xs:boolean">false</value>
+        </attribute>
+    </bean>
+  </beans>
+  <beans path="JavaCafPm">
+    <bean name="JavaCafPm" className="JavaCafPm"/>
+    <bean parentFieldName="javaCafPmConfigId" name="JavaCafPmConfig,JavaCafPm" className="JavaCafPmConfig">
+        <attribute name="outputPath">
+            <value xsi:type="xs:string">/tmp/.pmcounter/pmreports</value>
+        </attribute>
+        <attribute name="counterFilePath">
+            <value xsi:type="xs:string">/tmp/.pmcounter</value>
+        </attribute>
+        <attribute name="counterFileLoaderInterval">
+            <value xsi:type="xs:int">1000</value>
+        </attribute>
+    </bean>
+    <bean parentFieldName="javaCafPmJobsId" name="JavaCafPmJobs,JavaCafPm"  className="JavaCafPmJobs"/>
+    <bean parentFieldName="javaCafPmJobId" name="stubjob1,JavaCafPmJobs,JavaCafPm" className="JavaCafPmJob">
+        <attribute name="name">
+            <value xsi:type="xs:string">job1</value>
+        </attribute>
+        <attribute name="state">
+            <value xsi:type="xs:string">active</value>
+        </attribute>
+        <attribute name="moc">
+            <value xsi:type="xs:string">IPTV=1,CoreMeas</value>
+        </attribute>
+      </bean>
+    </beans>
+    <beans path="EsaConnection">
+       <bean name="EsaConnection" className="EsaConnection">
+       </bean>
+    </beans>
+    <beans path="SessionDataServices">
+       <bean name="SessionDataServices" className="SessionDataServices">
+       </bean>
+    </beans>
+  <beans path="JavaSipCLB">
+    <bean name="JavaSipCLB" className="JavaSipCLB"/>
+  </beans>
+  <beans path="JavaOam">
+    <bean name="JavaOam" className="JavaOam"/>
+  </beans>
+</ns3:configuration>

@@ -1,0 +1,60 @@
+# This is the default ansible 'hosts' file.
+#
+# It should live in /etc/ansible/hosts
+#
+#   - Comments begin with the '#' character
+#   - Blank lines are ignored
+#   - Groups of hosts are delimited by [header] elements
+#   - You can enter hostnames or ip addresses
+#   - A hostname/ip can be a member of multiple groups
+
+[controllers]
+dpa2btecetx06vm001 ansible_host=node-1 ansible_ssh_host=xxx.x.xxx.95  ansible_user=super-user  ansible_python_interpreter=python
+dpa2btecetx06vm002 ansible_host=node-2 ansible_ssh_host=xxx.x.xxx.97  ansible_user=super-user  ansible_python_interpreter=python
+dpa2btecetx06vm003 ansible_host=node-3 ansible_ssh_host=xxx.x.xxx.103 ansible_user=super-user  ansible_python_interpreter=python
+dpa2btecetx06vm004 ansible_host=node-4 ansible_ssh_host=xxx.x.xxx.98  ansible_user=super-user  ansible_python_interpreter=python
+dpa2btecetx06vm005 ansible_host=node-5 ansible_ssh_host=xxx.x.xxx.104 ansible_user=super-user  ansible_python_interpreter=python
+
+[traffic]
+dpa2btecetx06vm006 ansible_host=ngin-1 ansible_ssh_host=xxx.x.xxx.99  ansible_user=super-user  ansible_python_interpreter=python
+dpa2btecetx06vm007 ansible_host=ngin-2 ansible_ssh_host=xxx.x.xxx.100 ansible_user=super-user  ansible_python_interpreter=python
+dpa2btecetx06vm008 ansible_host=ngin-3 ansible_ssh_host=xxx.x.xxx.101 ansible_user=super-user  ansible_python_interpreter=python
+dpa2btecetx06vm009 ansible_host=ngin-4 ansible_ssh_host=xxx.x.xxx.102 ansible_user=super-user  ansible_python_interpreter=python
+
+[license]
+dpa2btecetx06vm001 ansible_host=node-1 ansible_ssh_host=xxx.x.xxx.95  ansible_user=super-user  ansible_python_interpreter=python
+dpa2btecetx06vm002 ansible_host=node-2 ansible_ssh_host=xxx.x.xxx.97  ansible_user=super-user  ansible_python_interpreter=python
+
+[frontend]
+dpa2btecetx06vm006 ansible_host=ngin-1 ansible_ssh_host=xxx.x.xxx.99  ansible_user=super-user  ansible_python_interpreter=python
+dpa2btecetx06vm007 ansible_host=ngin-2 ansible_ssh_host=xxx.x.xxx.100 ansible_user=super-user  ansible_python_interpreter=python
+
+[backend]
+dpa2btecetx06vm008 ansible_host=ngin-3 ansible_ssh_host=xxx.x.xxx.101 ansible_user=super-user  ansible_python_interpreter=python
+dpa2btecetx06vm009 ansible_host=ngin-4 ansible_ssh_host=xxx.x.xxx.102 ansible_user=super-user  ansible_python_interpreter=python
+
+[primary-traffic]
+dpa2btecetx06vm006 ansible_host=ngin-1 ansible_ssh_host=xxx.x.xxx.99  ansible_user=super-user  ansible_python_interpreter=python
+
+[primary-controller]
+dpa2btecetx06vm001 ansible_host=node-1 ansible_ssh_host=xxx.x.xxx.95  ansible_user=super-user  ansible_python_interpreter=python
+
+[diameter]
+dpa2btecetx06vm001 ansible_host=node-1 ansible_ssh_host=xxx.x.xxx.95  ansible_user=super-user  ansible_python_interpreter=python
+dpa2btecetx06vm002 ansible_host=node-2 ansible_ssh_host=xxx.x.xxx.97  ansible_user=super-user  ansible_python_interpreter=python
+dpa2btecetx06vm006 ansible_host=ngin-1 ansible_ssh_host=xxx.x.xxx.99  ansible_user=super-user  ansible_python_interpreter=python
+dpa2btecetx06vm007 ansible_host=ngin-2 ansible_ssh_host=xxx.x.xxx.100 ansible_user=super-user  ansible_python_interpreter=python
+dpa2btecetx06vm008 ansible_host=ngin-3 ansible_ssh_host=xxx.x.xxx.101 ansible_user=super-user  ansible_python_interpreter=python
+dpa2btecetx06vm009 ansible_host=ngin-4 ansible_ssh_host=xxx.x.xxx.102 ansible_user=super-user  ansible_python_interpreter=python
+
+[mysqlmgm]
+dpa2btecetx06vm001 ansible_host=node-1 ansible_ssh_host=xxx.x.xxx.95  ansible_user=super-user  ansible_python_interpreter=python
+dpa2btecetx06vm002 ansible_host=node-2 ansible_ssh_host=xxx.x.xxx.97  ansible_user=super-user  ansible_python_interpreter=python
+
+[mysqlcluster]
+dpa2btecetx06vm004 ansible_host=node-4 ansible_ssh_host=xxx.x.xxx.98  ansible_user=super-user  ansible_python_interpreter=python
+dpa2btecetx06vm005 ansible_host=node-5 ansible_ssh_host=xxx.x.xxx.104 ansible_user=super-user  ansible_python_interpreter=python
+
+[ece:children]
+controllers
+traffic

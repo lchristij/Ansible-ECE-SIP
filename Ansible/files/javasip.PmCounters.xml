@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmCntGroup active="yes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.ericsson.com/esa" xsi:schemaLocation="http://www.ericsson.com/esa PmCounter.xsd">
+    <identification>
+        <groupId>JAVASIPCOUNTERS</groupId>
+    </identification>
+
+        <description>
+        <groupDescr>JavaSIP Counters Group</groupDescr>
+        <groupInfo>JavaSIP statistics counters group</groupInfo>
+    </description>
+
+        <cntDefinition active="yes" activeSnmp="yes" cntType="CC">
+        <identification>
+            <counterId>SentSipRequests</counterId>
+        </identification>
+        <description>
+            <counterDescr>The number of SIP requests sent by JavaSIP, both originated and relayed, including retransmissions and forking</counterDescr>
+            <counterInfo>Count of total SIP requests sent</counterInfo>
+        </description>
+        <dataSource interval="10">
+            <jmx>
+                <url>service:jmx:remoting-jmx://localhost:27802</url>
+                <objectName>com.ericsson.caf.pm:JavaSIP=1,SentSipRequests=1,Sip=1,type=CC</objectName>
+                <attribute>IntValue</attribute>
+            </jmx>
+        </dataSource>
+    </cntDefinition>
+
+        <cntDefinition active="yes" activeSnmp="yes" cntType="CC">
+        <identification>
+            <counterId>ReceivedSipRequests</counterId>
+        </identification>
+        <description>
+            <counterDescr>The number of SIP requests received by JavaSIP, including retransmissions</counterDescr>
+            <counterInfo>Count of total SIP requests received</counterInfo>
+        </description>
+        <dataSource interval="10">
+            <jmx>
+                <url>service:jmx:remoting-jmx://localhost:27802</url>
+                <objectName>com.ericsson.caf.pm:JavaSIP=1,ReceivedSipRequests=1,Sip=1,type=CC</objectName>
+                <attribute>IntValue</attribute>
+            </jmx>
+        </dataSource>
+    </cntDefinition>
+
+        <cntDefinition active="yes" activeSnmp="yes" cntType="CC">
+        <identification>
+            <counterId>ReceivedInvalidSipMessages</counterId>
+        </identification>
+        <description>
+            <counterDescr>The number of messages received but not recognized as SIP messages, including retransmissions</counterDescr>
+            <counterInfo>Count of total invalid SIP messages received</counterInfo>
+        </description>
+        <dataSource interval="10">
+            <jmx>
+                <url>service:jmx:remoting-jmx://localhost:27802</url>
+                <objectName>com.ericsson.caf.pm:JavaSIP=1,ReceivedInvalidSipMessages=1,Sip=1,type=CC</objectName>
+                <attribute>IntValue</attribute>
+            </jmx>
+        </dataSource>
+    </cntDefinition>
+
+        <cntDefinition active="yes" activeSnmp="yes" cntType="CC">
+        <identification>
+            <counterId>SentSipResponses</counterId>
+        </identification>
+        <description>
+            <counterDescr>The number of SIP responses sent by JavaSIP, both originated and relayed, including retransmissions</counterDescr>
+            <counterInfo>Count of total SIP responses sent</counterInfo>
+        </description>
+        <dataSource interval="10">
+            <jmx>
+                <url>service:jmx:remoting-jmx://localhost:27802</url>
+                <objectName>com.ericsson.caf.pm:JavaSIP=1,SentSipResponses=1,Sip=1,type=CC</objectName>
+                <attribute>IntValue</attribute>
+            </jmx>
+        </dataSource>
+    </cntDefinition>
+
+        <cntDefinition active="yes" activeSnmp="yes" cntType="CC">
+        <identification>
+            <counterId>SuccessfulSipDialogs</counterId>
+        </identification>
+        <description>
+            <counterDescr>The number of SIP dialogs that have been successfully established</counterDescr>
+            <counterInfo>Count of total Successful SIP dialogs</counterInfo>
+        </description>
+        <dataSource interval="10">
+            <jmx>
+                <url>service:jmx:remoting-jmx://localhost:27802</url>
+                <objectName>com.ericsson.caf.pm:JavaSIP=1,Sip=1,SuccessfulSipDialogs=1,type=CC</objectName>
+                <attribute>IntValue</attribute>
+            </jmx>
+        </dataSource>
+    </cntDefinition>
+
+        <cntDefinition active="yes" activeSnmp="yes" cntType="CC">
+        <identification>
+            <counterId>FailedSipDialogs</counterId>
+        </identification>
+        <description>
+            <counterDescr>The number of failed SIP dialog setup attempts. The application or a succeeding node in the signaling path has responded with a 4xx -6xx response code.</counterDescr>
+            <counterInfo>Count of failed SIP dialogs</counterInfo>
+        </description>
+        <dataSource interval="10">
+            <jmx>
+                <url>service:jmx:remoting-jmx://localhost:27802</url>
+                <objectName>com.ericsson.caf.pm:FailedSipDialogs=1,JavaSIP=1,Sip=1,type=CC</objectName>
+                <attribute>IntValue</attribute>
+            </jmx>
+        </dataSource>
+    </cntDefinition>
+
+        <cntDefinition active="yes" activeSnmp="yes" cntType="CC">
+        <identification>
+            <counterId>TotalSipTransactionCount</counterId>
+        </identification>
+        <description>
+            <counterDescr>The total number of SIP transactions.</counterDescr>
+            <counterInfo>Count of total SIP transactions</counterInfo>
+        </description>
+        <dataSource interval="10">
+            <jmx>
+                <url>service:jmx:remoting-jmx://localhost:27802</url>
+                <objectName>com.ericsson.caf.pm:JavaSIP=1,Sip=1,TotalSipTransactionCount=1,type=CC</objectName>
+                <attribute>IntValue</attribute>
+            </jmx>
+        </dataSource>
+    </cntDefinition>
+
+        <cntDefinition active="yes" activeSnmp="yes" cntType="CC">
+        <identification>
+            <counterId>SipServerTransactions</counterId>
+        </identification>
+        <description>
+            <counterDescr>The number of SIP server transactions that are in progress or have reached the terminated state.</counterDescr>
+            <counterInfo>Count of total SIP server transactions</counterInfo>
+        </description>
+        <dataSource interval="10">
+            <jmx>
+                <url>service:jmx:remoting-jmx://localhost:27802</url>
+                <objectName>com.ericsson.caf.pm:JavaSIP=1,Sip=1,SipServerTransactions=1,type=CC</objectName>
+                <attribute>IntValue</attribute>
+            </jmx>
+        </dataSource>
+    </cntDefinition>
+
+</pmCntGroup>

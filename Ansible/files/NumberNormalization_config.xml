@@ -1,0 +1,37 @@
+<NUMBER-NORMALIZATION xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <HEADERS>
+
+                                <!-- CallingParty is the custom header added for Number Normalization-->
+               <HEADER name="CallingParty" matchBreak="true">
+                                        <!-- Rules to be defined to meet req -->
+                    <MATCH expr="\+(\d{11,15})$">
+                           <NEW expr="{$1}" HEADERNAME="normalizedCallingParty" />
+                    </MATCH>
+                                        <MATCH expr="^011(\d{11})$">
+                           <NEW expr="{$1}" HEADERNAME="normalizedCallingParty" />
+                    </MATCH>
+                    <MATCH expr="^(\d{10})$">
+                           <NEW expr="1{$1}" HEADERNAME="normalizedCallingParty" />
+                    </MATCH>
+                    <MATCH expr="(^1\d{10})$">
+                           <NEW expr="{$1}" HEADERNAME="normalizedCallingParty" />
+                    </MATCH>
+               </HEADER>
+               <!-- CalledParty is the custom header added for Number Normalization-->
+               <HEADER name="CalledParty" matchBreak="true">
+                           <!-- Rules to be defined to meet req -->
+                     <MATCH expr="\+(\d{11,15})$">
+                           <NEW expr="{$1}" HEADERNAME="normalizedCalledParty" />
+                    </MATCH>
+                                        <MATCH expr="^011(\d{11})$">
+                           <NEW expr="{$1}" HEADERNAME="normalizedCalledParty" />
+                    </MATCH>
+                    <MATCH expr="^(\d{10})$">
+                           <NEW expr="1{$1}" HEADERNAME="normalizedCalledParty" />
+                    </MATCH>
+                    <MATCH expr="(^1\d{10})$">
+                           <NEW expr="{$1}" HEADERNAME="normalizedCalledParty" />
+                    </MATCH>
+               </HEADER>
+                        </HEADERS>
+</NUMBER-NORMALIZATION>

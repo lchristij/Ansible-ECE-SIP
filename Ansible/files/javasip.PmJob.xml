@@ -1,0 +1,7 @@
+<pmJobCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ericsson.com/esa PmJob.xsd" xmlns="http://www.ericsson.com/esa">
+    <jobDefinition>
+        <jobId>JAVASIPPMJOB</jobId>
+        <groupId>JAVASIPCOUNTERS</groupId>
+        <granularityPeriod>15</granularityPeriod>
+    </jobDefinition>
+</pmJobCollection>

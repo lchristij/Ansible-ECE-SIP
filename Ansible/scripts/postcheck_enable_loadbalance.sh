@@ -1,0 +1,7 @@
+#!/bin/bash
+
+/opt/jboss/bin/jboss-cli.sh --controller=:27802 -c --command='data-source --name=jdbc_callRedirectRead --connection-url="jdbc:mysql:loadbalance://${env.DB_HOSTS}/call_redirect?characterEncoding=UTF-8&FailOverReadOnly=false&initialTimeOut=0&loadBalanceBlacklistTimeout=5000&autoReconnect=true&maxReconnects=10&roundRobinLoadBalance=true&connectTimeout=1000&socketTimeout=1000"'
+/opt/jboss/bin/jboss-cli.sh --controller=:27802 -c --command='data-source --name=jdbc_callRedirectWrite --connection-url="jdbc:mysql:loadbalance://${env.DB_GEO_HOSTS}/call_redirect?characterEncoding=UTF-8&FailOverReadOnly=false&initialTimeOut=0&loadBalanceBlacklistTimeout=5000&autoReconnect=true&maxReconnects=10&roundRobinLoadBalance=true&connectTimeout=1000&socketTimeout=1000"'
+/opt/jboss/bin/jboss-cli.sh --controller=:27802 -c --command='data-source --name=jdbc_read_fmc --connection-url="jdbc:mysql:loadbalance://${env.DB_HOSTS}/fmc?characterEncoding=UTF-8&FailOverReadOnly=false&initialTimeOut=0&loadBalanceBlacklistTimeout=5000&autoReconnect=true&maxReconnects=10&roundRobinLoadBalance=true&connectTimeout=1000&socketTimeout=1000"'
+/opt/jboss/bin/jboss-cli.sh --controller=:27802 -c --command='data-source --name=ngin_common_jdbc_sip_applicationrouter --connection-url="jdbc:mysql:loadbalance://${env.DB_HOSTS}/SipApplicationSelectionRules?characterEncoding=UTF-8&FailOverReadOnly=false&initialTimeOut=0&loadBalanceBlacklistTimeout=5000&autoReconnect=true&maxReconnects=10&roundRobinLoadBalance=true&connectTimeout=1000&socketTimeout=1000"'
+

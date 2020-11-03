@@ -1,0 +1,127 @@
+---
+- name: OfficeAtHome Installation
+  hosts: traffic
+  become: yes
+  become_user: root
+  serial: 1
+  order: sorted
+  tasks:
+    - name: Component HealthCheck
+      shell: component check_health -dp=DP-NGIN-JBOSS-Traffic
+      register: hc
+      
+    - debug: 
+        var: hc.stdout_lines
+        
+    - name: Create Directory
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0775'
+        owner: oam
+        group: oam
+      with_items: 
+        - /var/ericsson/log/oah
+        - /var/ericsson/log/oah/work
+        - /var/ericsson/log/oah/finished
+        
+    - name: Copy OAH RPM
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/packages/att_oah_rpm-{{ oah_version }}.rpm
+        dest: /cluster/home/sw_deliveries/
+        
+    - name: Install OAH RPM
+      yum: 
+        name: /cluster/home/sw_deliveries/att_oah_rpm-{{ oah_version }}.rpm
+        state: present
+      async: 60
+      poll: 0
+
+    - name: Wait For RPM Install To Complete
+      pause:
+        seconds: 30
+
+    - name: Check Installed RPM
+      shell: rpm -qa | grep -i oah_rpm
+      register: oah_rpm
+
+    - debug: 
+        var: oah_rpm.stdout_lines
+
+    - name: Component HealthCheck
+      shell: component check_health -dp=DP-NGIN-JBOSS-Traffic
+      register: oah_hc
+      
+    - debug: 
+        var: oah_hc.stdout_lines
+        
+    - name: Copy Config File
+      copy: 
+        src: /home/sdnoansi/group_automation/eceare/files/oah_config.xml 
+        dest: /cluster/home/oah/config.xml
+        
+    - name: Change ESA Counter File Ownership
+      file:
+        path: "{{ item }}"
+        owner: root
+        group: esa
+        mode: '0644'        
+      with_items:
+        - /opt/ESA/conf/pmCounters/oah.PmCounters.xml
+        - /opt/ESA/conf/pmJobs/oah.PmJob.xml
+        
+    - name: Restart ESA
+      systemd:
+        name: esa
+        state: restarted
+        
+    - name: Copy Logging & DB Scripts
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/scripts/{{ item }}
+        dest: /var/tmp/
+      with_items:
+        - oah_logging.sh
+        - oah_db.sql
+      
+    - name: Set Logging
+      shell: sh /var/tmp/oah_logging.sh > /var/tmp/oah.log
+     
+    - name: Restart JBOSS
+      systemd:
+        state: restarted
+        name: DP-NGIN-JBOSS-Traffic
+
+    - name: Create Tempfile For Log Tailing
+      tempfile:
+        state: file
+      register: tempfile
+
+    - name: Asynchronous Tail Log To Temp File
+      shell: tailf /var/lib/jboss/domains/DP-NGIN-JBOSS-Traffic_{{ ansible_host }}/log/server.log | grep --line-buffered "JBAS015874" >> {{ tempfile.path }}
+      async: 600
+      poll: 0
+
+    - name: Wait For Regex In Log
+      wait_for:
+        path: "{{ tempfile.path }}"
+        search_regex: 'JBAS015874'
+
+    - name: Remove Tempfile
+      file:
+        path: "{{ tempfile.path }}"
+        state: absent  
+
+    - name: Component HealthCheck
+      shell: component check_health -dp=DP-NGIN-JBOSS-Traffic
+      register: oah_hc
+
+    - debug:
+        var: oah_hc.stdout_lines
+        
+- name: OAH DB Config
+  hosts: primary-traffic
+  become: yes
+  become_user: root
+  tasks:
+    - name: execute db commands
+      shell: mysqlclient < /var/tmp/oah_db.sql

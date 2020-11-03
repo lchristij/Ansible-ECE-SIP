@@ -1,0 +1,27 @@
+---
+- name: Configure NGIN Nodes
+  hosts: primary-traffic
+  become: yes
+  become_user: root
+  vars:
+    backup_filename: 
+  tasks:
+    - name: NGIN Nodes VNF Configure 
+      command: /ansible-deployment/scripts/vnf_configure
+
+    - name: Check Node Status
+      command: /bin/cluster-cli list-node-state
+      register: node_state
+
+    - debug:
+        var: node_state.stdout_lines
+
+    - name: Perform Healthcheck
+      command: /bin/check-ece-health
+      register: healthcheck
+      failed_when: false
+      no_log: True
+
+    - name: healthcheck output
+      debug: 
+        var: healthcheck.stdout_lines 

@@ -1,0 +1,144 @@
+---
+- name: NTP Configuration
+  hosts: ece
+  become: yes
+  become_user: root
+  tasks:
+    - name: Modify NTP Address
+      command: echo y | cm-cli set --key=SEP/env/rda/1.0/global/NTP_SERVER --value=10.7.0.140
+         
+    - name: Get NTP Server IP
+      command: cm-cli get --key=SEP/env/rda/1.0/global/NTP_SERVER
+
+    - name: Set the new NTP address Chrony file HealthCheck
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/files/chrony.conf
+        dest: /etc/
+
+    - name: Restart Chronyd
+      systemd:
+        state: restarted
+        name: chronyd
+
+    - name: Check NTP Sync
+      command: chronyc sources
+      register: ntp_source
+      
+    - debug:
+        var: ntp_source
+
+    - name: Check NTP Sync
+      command: chronyc -a 'burst 1/1'
+
+    - name: Check NTP Sync
+      command: chronyc -a makestep
+
+### Enable Load Balance in JDBC
+- name: Enable Loadbalance In JDBC
+  hosts: traffic
+  become: yes
+  become_user: root
+  tasks:
+    - name: Copy Script
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/scripts/postcheck_enable_loadbalance.sh
+        dest: /var/tmp/
+
+    - name: Execute loadbalance Script
+      shell: sh /var/tmp/postcheck_enable_loadbalance.sh > loadbalance.log
+
+### Add Jboss server logs Alias
+    - name: Add Alias
+      lineinfile:
+        dest: /root/.bashrc
+        line: "alias tlog='cd /var/lib/jboss/domains/DP-NGIN-JBOSS-Traffic_{{ ansible_host }}/log'"
+        insertafter: "alias mv=\'mv -i\'"
+
+    - name: Add Alias
+      lineinfile:
+        dest: /root/.bashrc
+        line: "alias tconf='cd /var/lib/jboss/domains/DP-NGIN-JBOSS-Traffic_{{ ansible_host }}/configuration'"
+        insertafter: "alias mv=\'mv -i\'"        
+
+### Remove Alarm definition
+- name: Remove SS7 Alarm Definition
+  hosts: ece
+  become: yes
+  become_user: root
+  tasks:
+    - name: Remove Alarm 
+      copy:
+        src: /opt/ESA/conf/fmAlarmDefinitions/{{ item }}.xml
+        dest: /opt/ESA/conf/fmAlarmDefinitions/{{ item }}.xml.org
+        remote_src: yes
+      with_items:
+       - ece_ss7_3sm_snmp_alarmdefinitions
+       - ece_ss7_tcap_monitor_alarmdefinitions
+
+- name: Remove Diameter Alarm Definitions
+  hosts: diameter
+  become: yes
+  become_user: root
+  tasks:
+    - name: Remove Alarm
+      copy:
+        src: /opt/ESA/conf/fmAlarmDefinitions/{{ item }}.xml
+        dest: /opt/ESA/conf/fmAlarmDefinitions/{{ item }}.xml.org
+        remote_src: yes
+      with_items:
+       - ece_diameter_ra_alarmdefinitions
+
+# Mysql backup add super-user permissions
+- name: Create MYSQL Directory
+  hosts: primary-controller 
+  become: yes
+  become_user: root
+  tasks:
+    - name: Create Directory
+      file:
+        path: /cluster/home/backups/mysql
+        state: directory
+        mode: '0777'
+    
+- name: Delete MYSQLMGM Lost+Found Directory
+  hosts: mysqlmgm
+  become: yes
+  become_user: root
+  tasks:       
+    - name: Remove directory
+      file: 
+        path: /data/mysqlmgm/lost+found
+        state: absent
+        
+    - name: Remove Directory
+      file: 
+        path: /data/mysqlmgm/lost+found
+        state: absent
+
+- name: Delete MYSQLCLUSTER Lost+Found Directory
+  hosts: mysqlcluster
+  become: yes
+  become_user: root
+  tasks:
+    - name: Remove Directory
+      file: 
+        path: /data/mysqlcluster/lost+found
+        state: absent      
+
+    - name: Remove Directory
+      file: 
+        path: /data/mysqlcluster/lost+found
+        state: absent  
+
+- name: Provide super-user Permission To Run Backup
+  hosts: primary-controller 
+  become: yes
+  become_user: root
+  tasks:    
+    - name: Add super-user Permissions For Running Mysql Backup
+      command: "{{ item }}"
+      with_items:
+        - /usr/bin/mysql -umysql -hmysqld-1 -e "GRANT ALL ON *.* TO 'super-user'@'%' IDENTIFIED BY 'mysqladmin' WITH GRANT OPTION;"
+        - /usr/bin/mysql -umysql -hmysqld-1 -e "FLUSH PRIVILEGES;"
+        - /usr/bin/mysql -umysql -hmysqld-2 -e "GRANT ALL ON *.* TO 'super-user'@'%' IDENTIFIED BY 'mysqladmin' WITH GRANT OPTION;"
+        - mysql-backup-start --targetdir=/cluster/home/backups/mysql

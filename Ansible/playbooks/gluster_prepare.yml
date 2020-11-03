@@ -1,0 +1,37 @@
+---
+- name: Preparation
+  hosts: traffic
+  become: yes
+  become_user: root
+  tasks: 
+    - name: Stop JBOSS Traffic
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+      with_items:
+        - ss7ec
+        - DP-NGIN-JBOSS-Traffic
+        
+- name: Preparation
+  hosts: frontend
+  become: yes
+  become_user: root
+  tasks: 
+    - name: Stop JBOSS BM
+      systemd:
+        name: DP-NGIN-JBOSS-BM
+        state: stopped
+
+- name: Preparation
+  hosts: ece
+  become: yes
+  become_user: root
+  tasks: 
+    - name: Stop statistics & rda
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+      with_items:
+        - aggregateStatistics.service
+        - rda.consul-template
+        - esa.service

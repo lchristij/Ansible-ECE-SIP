@@ -1,0 +1,539 @@
+<CALL-REDIRECT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <ORIGINATING_S2S>
+                        <INVITE>
+                <DELETE>
+                         <HEADERS>
+                               <HEADER name="Record-Route" />
+                         </HEADERS>
+                </DELETE>
+                </INVITE>
+        </ORIGINATING_S2S>
+        <ORIGINATING_SBG>
+                <REQUEST_URI>
+                        <SCHEME name="sip">
+                                <HEADERS>
+                                        <HEADER name="user" matchBreak="true">
+                                                          <MATCH expr="^\+1(\d{10})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^\+1(\d{10})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="(^1\d{10})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                             <MATCH expr="(^1\d{10})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^(\d{10})$">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^(\d{10})([;].*)">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^\+(\d{11,15})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}011{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                             <MATCH expr="^\+(\d{11,15})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}011{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                                                          <MATCH expr="(^011\d{11})$">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="(^011\d{11})([;].*)">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                  </HEADER>
+                                        <HEADER name="host">
+                       <MATCH expr="one.att.net(.*)">
+                             <SET VALUE="psx1.hclab.atttest.com{$1}" HEADERNAME="host" />
+                       </MATCH>
+                                          </HEADER>
+                                </HEADERS>
+                        </SCHEME>
+                        <SCHEME name="SIPS">
+                                <HEADERS>
+                                        <HEADER name="user" matchBreak="true">
+                                                          <MATCH expr="^\+1(\d{10})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^\+1(\d{10})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}1{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="(^1\d{10})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                             <MATCH expr="(^1\d{10})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^(\d{10})$">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^(\d{10})([;].*)">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^\+(\d{11,15})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}011{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                             <MATCH expr="^\+(\d{11,15})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}011{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                                                          <MATCH expr="(^011\d{11})$">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="(^011\d{11})([;].*)">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                  </HEADER>
+                                        <HEADER name="host">
+                       <MATCH expr="one.att.net(.*)">
+                             <SET VALUE="psx1.hclab.atttest.com{$1}" HEADERNAME="host" />
+                       </MATCH>
+                                          </HEADER>
+                                </HEADERS>
+                        </SCHEME>
+                        <SCHEME name="tel">
+                                <HEADERS>
+                                        <HEADER name="phoneNumber" matchBreak="true">
+                                                          <MATCH expr="^\+1(\d{10})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                            <MATCH expr="^\+1(\d{10})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                            <MATCH expr="(^1\d{10})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                             <MATCH expr="(^1\d{10})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                            <MATCH expr="^(\d{10})$">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                            <MATCH expr="^(\d{10})([;].*)">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                            <MATCH expr="^\+(\d{11,15})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}011{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                             <MATCH expr="^\+(\d{11,15})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}011{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                                                          <MATCH expr="(^011\d{11})$">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                            <MATCH expr="(^011\d{11})([;].*)">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                                        </HEADER>
+                                        <HEADER name="phoneNumber">
+                       <MATCH expr="(.*)">
+                             <SET VALUE="psx1.hclab.atttest.com" HEADERNAME="host" />
+                       </MATCH>
+                                          </HEADER>
+                                </HEADERS>
+                        </SCHEME>
+                </REQUEST_URI>
+    <INVITE>
+                        <HEADERS>
+                                <HEADER name="P-Served-User">
+                                        <MATCH expr="(.*)tel:(.*)(>;?)(.*)">
+                                                <REPLACE expr="{$1}sip:{$2}@psx1.hclab.atttest.com{$3}{$4}"
+                                                        HEADERNAME="P-Served-User" />
+                                        </MATCH>
+                                </HEADER>
+                                <HEADER name="From" matchBreak="true">
+                        <MATCH expr="(.*)@(.*)one.att.net(.*)(;otg=[^;,>]*)(.*)">
+[200~<CALL-REDIRECT xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <ORIGINATING_S2S>
+                        <INVITE>
+                <DELETE>
+                         <HEADERS>
+                               <HEADER name="Record-Route" />
+                         </HEADERS>
+                </DELETE>
+                </INVITE>
+        </ORIGINATING_S2S>
+        <ORIGINATING_SBG>
+                <REQUEST_URI>
+                        <SCHEME name="sip">
+                                <HEADERS>
+                                        <HEADER name="user" matchBreak="true">
+                                                          <MATCH expr="^\+1(\d{10})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^\+1(\d{10})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="(^1\d{10})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                             <MATCH expr="(^1\d{10})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^(\d{10})$">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^(\d{10})([;].*)">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^\+(\d{11,15})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}011{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                             <MATCH expr="^\+(\d{11,15})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}011{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                                                          <MATCH expr="(^011\d{11})$">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="(^011\d{11})([;].*)">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                  </HEADER>
+                                        <HEADER name="host">
+                       <MATCH expr="one.att.net(.*)">
+                             <SET VALUE="psx1.hclab.atttest.com{$1}" HEADERNAME="host" />
+                       </MATCH>
+                                          </HEADER>
+                                </HEADERS>
+                        </SCHEME>
+                        <SCHEME name="SIPS">
+                                <HEADERS>
+                                        <HEADER name="user" matchBreak="true">
+                                                          <MATCH expr="^\+1(\d{10})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^\+1(\d{10})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}1{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="(^1\d{10})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                             <MATCH expr="(^1\d{10})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^(\d{10})$">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^(\d{10})([;].*)">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^\+(\d{11,15})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}011{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                             <MATCH expr="^\+(\d{11,15})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}011{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                                                          <MATCH expr="(^011\d{11})$">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="(^011\d{11})([;].*)">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                  </HEADER>
+                                        <HEADER name="host">
+                       <MATCH expr="one.att.net(.*)">
+                             <SET VALUE="psx1.hclab.atttest.com{$1}" HEADERNAME="host" />
+                       </MATCH>
+                                          </HEADER>
+                                </HEADERS>
+                        </SCHEME>
+                        <SCHEME name="tel">
+                                <HEADERS>
+                                        <HEADER name="phoneNumber" matchBreak="true">
+                                                          <MATCH expr="^\+1(\d{10})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                            <MATCH expr="^\+1(\d{10})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                            <MATCH expr="(^1\d{10})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                             <MATCH expr="(^1\d{10})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                            <MATCH expr="^(\d{10})$">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                            <MATCH expr="^(\d{10})([;].*)">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                            <MATCH expr="^\+(\d{11,15})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}011{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                             <MATCH expr="^\+(\d{11,15})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}011{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                                                          <MATCH expr="(^011\d{11})$">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                            <MATCH expr="(^011\d{11})([;].*)">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                                        </HEADER>
+                                        <HEADER name="phoneNumber">
+                       <MATCH expr="(.*)">
+                             <SET VALUE="psx1.hclab.atttest.com" HEADERNAME="host" />
+                       </MATCH>
+                                          </HEADER>
+                                </HEADERS>
+                        </SCHEME>
+                </REQUEST_URI>
+    <INVITE>
+                        <HEADERS>
+                                <HEADER name="P-Served-User">
+                                        <MATCH expr="(.*)tel:(.*)(>;?)(.*)">
+                                                <REPLACE expr="{$1}sip:{$2}@psx1.hclab.atttest.com{$3}{$4}"
+                                                        HEADERNAME="P-Served-User" />
+                                        </MATCH>
+                                </HEADER>
+                                <HEADER name="From" matchBreak="true">
+                        <MATCH expr="(.*)@(.*)one.att.net(.*)(;otg=[^;,>]*)(.*)">
+                <REPLACE expr="{$1}@psx1.hclab.atttest.com{$3}{$5}" HEADERNAME="From" />
+            </MATCH>
+            <MATCH expr="(.*)(;otg=[^;,>]*)(.*)">
+                <REPLACE expr="{$1}{$3}" HEADERNAME="From" />
+            </MATCH>
+                <MATCH expr="(.*)@(.*)one.att.net(.*)">
+              <REPLACE expr="{$1}@psx1.hclab.atttest.com{$3}" HEADERNAME="From" />
+                </MATCH>
+                <MATCH expr="(.*)@(.*)(\[.*\])(.*)">
+              <REPLACE expr="{$1}@psx1.hclab.atttest.com{$4}" HEADERNAME="From" />
+                </MATCH>
+                </HEADER>
+                        <HEADER name="Supported">
+                                <actionIfNotContains name="Supported" valueTobeChecked="timer">
+                                        <ADD expr="timer" HEADERNAME="Supported" />
+                                </actionIfNotContains>
+                </HEADER>
+                <HEADER name="Contact" matchBreak="true">
+                        <MATCH expr="(.*),(.*?),(.*?)(&lt;.*$)">
+                                <REPLACE expr="{$1}{$2}{$3}{$4}" HEADERNAME="Contact" />
+                        </MATCH>
+                        <MATCH expr="(.*),(.*?)(&lt;.*$)">
+                                <REPLACE expr="{$1}{$2}{$3}" HEADERNAME="Contact" />
+                        </MATCH>
+                </HEADER>
+                        </HEADERS>
+    <DELETE>
+             <HEADERS>
+                   <HEADER name="Route" />
+                   <HEADER name="Record-Route" />
+             </HEADERS>
+    </DELETE>
+    </INVITE>
+        <REINVITE>
+            <HEADERS>
+                <HEADER name="Expires" matchBreak="true">
+                    <MATCH expr="(.*)" >
+                        <REPLACE expr="600" HEADERNAME="Expires" />
+                    </MATCH>
+                </HEADER>
+                                                                <HEADER name="Session-Expires">
+                                                                                <MATCH expr="(.*)" >
+                                                                                        <REPLACE expr="2280" HEADERNAME="Session-Expires" />
+                                                                                </MATCH>
+                                                                </HEADER>
+                        </HEADERS>
+  </REINVITE>
+        </ORIGINATING_SBG>
+        <TERMINATING_S2S>
+        </TERMINATING_S2S>
+        <TERMINATING_SBG>
+                <REQUEST_URI>
+                        <SCHEME name="sip">
+                                <HEADERS>
+                                        <HEADER name="user" matchBreak="true">
+                                                <MATCH expr="^\+1(\d{10})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^\+1(\d{10})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="(^1\d{10})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                             <MATCH expr="(^1\d{10})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^(\d{10})$">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^(\d{10})([;].*)">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^\+(\d{11,15})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}011{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                             <MATCH expr="^\+(\d{11,15})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}011{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                                                          <MATCH expr="(^011\d{11,15})$">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="(^011\d{11})([;].*)">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                  </HEADER>
+                                        <HEADER name="host">
+                       <MATCH expr="one.att.net(.*)">
+                             <SET VALUE="psx1.hclab.atttest.com{$1}" HEADERNAME="host" />
+                       </MATCH>
+                                          </HEADER>
+                                </HEADERS>
+                        </SCHEME>
+                        <SCHEME name="SIPS">
+                                <HEADERS>
+                                        <HEADER name="user" matchBreak="true">
+                                                <MATCH expr="^\+1(\d{10})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^\+1(\d{10})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}1{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="(^1\d{10})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                             <MATCH expr="(^1\d{10})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^(\d{10})$">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^(\d{10})([;].*)">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="^\+(\d{11,15})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}011{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                             <MATCH expr="^\+(\d{11,15})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}011{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                                                          <MATCH expr="(^011\d{11,15})$">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                            <MATCH expr="(^011\d{11,15})([;].*)">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]}{$2};trunk-context=bvoip.att.net" HEADERNAME="user" />
+                            </MATCH>
+                  </HEADER>
+                                        <HEADER name="host">
+                       <MATCH expr="one.att.net(.*)">
+                             <SET VALUE="psx1.hclab.atttest.com{$1}" HEADERNAME="host" />
+                       </MATCH>
+                                          </HEADER>
+                                </HEADERS>
+                        </SCHEME>
+                        <SCHEME name="tel">
+                                <HEADERS>
+                                        <HEADER name="phoneNumber" matchBreak="true">
+                                                          <MATCH expr="^\+1(\d{10})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                            <MATCH expr="^\+1(\d{10})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                            <MATCH expr="(^1\d{10})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                             <MATCH expr="(^1\d{10})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                            <MATCH expr="^(\d{10})$">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                            <MATCH expr="^(\d{10})([;].*)">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                            <MATCH expr="^\+(\d{11,15})$">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}011{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                             <MATCH expr="^\+(\d{11,15})([;].*)">
+                                   <SET VALUE="{@DB_RoutingInfo[RIC]}011{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                                                          <MATCH expr="(^011\d{11})$">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                            <MATCH expr="(^011\d{11})([;].*)">
+                                  <SET VALUE="{@DB_RoutingInfo[RIC]}{$1};tgrp=cn-{@DB_RoutingInfo[TGRP]};trunk-context=bvoip.att.net" HEADERNAME="phoneNumber" />
+                            </MATCH>
+                                        </HEADER>
+                                        <HEADER name="phoneNumber">
+                       <MATCH expr="(.*)">
+                             <SET VALUE="psx1.hclab.atttest.com" HEADERNAME="host" />
+                       </MATCH>
+                                          </HEADER>
+                                </HEADERS>
+                        </SCHEME>
+                </REQUEST_URI>
+        <INVITE>
+                        <HEADERS>
+                                <HEADER name="P-Served-User">
+                                        <MATCH expr="(.*)tel:(.*)(>;?)(.*)">
+                                                <REPLACE expr="{$1}sip:{$2}@psx1.hclab.atttest.com{$3}{$4}"
+                                                        HEADERNAME="P-Served-User" />
+                                        </MATCH>
+                                </HEADER>
+                                <HEADER name="From" matchBreak="true">
+                        <MATCH expr="(.*)@(.*)one.att.net(.*)(;otg=[^;,>]*)(.*)">
+                <REPLACE expr="{$1}@psx1.hclab.atttest.com{$3}{$5}" HEADERNAME="From" />
+            </MATCH>
+            <MATCH expr="(.*)(;otg=[^;,>]*)(.*)">
+                <REPLACE expr="{$1}{$3}" HEADERNAME="From" />
+            </MATCH>
+          <MATCH expr="(.*)@(.*)one.att.net(.*)">
+              <REPLACE expr="{$1}@psx1.hclab.atttest.com{$3}" HEADERNAME="From" />
+          </MATCH>
+          <MATCH expr="(.*)@(.*)(\[.*\])(.*)">
+              <REPLACE expr="{$1}@psx1.hclab.atttest.com{$4}" HEADERNAME="From" />
+          </MATCH>
+        </HEADER>
+                                <HEADER name="Supported">
+                                        <actionIfNotContains name="Supported" valueTobeChecked="timer">
+                                                <ADD expr="timer" HEADERNAME="Supported" />
+                                        </actionIfNotContains>
+                                </HEADER>
+                <HEADER name="Contact" matchBreak="true">
+                        <MATCH expr="(.*),(.*?),(.*?)(&lt;.*$)">
+                                <REPLACE expr="{$1}{$2}{$3}{$4}" HEADERNAME="Contact" />
+                        </MATCH>
+                        <MATCH expr="(.*),(.*?)(&lt;.*$)">
+                                <REPLACE expr="{$1}{$2}{$3}" HEADERNAME="Contact" />
+                        </MATCH>
+                </HEADER>
+                        </HEADERS>
+        <DELETE>
+                        <HEADERS>
+                   <HEADER name="Route" />
+                   <HEADER name="Record-Route" />
+             </HEADERS>
+        </DELETE>
+        </INVITE>
+        <REINVITE>
+            <HEADERS>
+                <HEADER name="Expires" matchBreak="true">
+                    <MATCH expr="(.*)" >
+                        <REPLACE expr="600" HEADERNAME="Expires" />
+                    </MATCH>
+                </HEADER>
+                                                                <HEADER name="Session-Expires" >
+                                                                        <MATCH expr="(.*)" >
+                                                                                <REPLACE expr="2280" HEADERNAME="Session-Expires" />
+                                                                        </MATCH>
+                                                                </HEADER>
+                        </HEADERS>
+  </REINVITE>
+        </TERMINATING_SBG>
+        <TERMINATING_SESSION_LOOP>
+                <INVITE>
+                        <HEADERS>
+                        <!-- Session_loop is the custom header added when Session loop is detected -->
+               <HEADER name="Session_loop">
+                                    <MATCH expr="(.*)">
+                                        <NEW expr="MCollab;skip=redirect" HEADERNAME="X-ATT-Service" />
+                                    </MATCH>
+                                </HEADER>
+                        </HEADERS>
+                </INVITE>
+        </TERMINATING_SESSION_LOOP>
+</CALL-REDIRECT>

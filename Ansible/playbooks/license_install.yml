@@ -1,0 +1,36 @@
+---
+- name: Installing License 
+  hosts: license
+  become: yes
+  become_user: root
+  tasks:
+    - name: Check License Server
+      systemd:
+        state: started
+        name: "{{ item }}"
+      with_items:
+        - licenseserver-web
+        - licenseserver
+    
+    - debug: var=ansible_host
+                
+    - name: Setup Environment Variable in ECE
+      shell: export LSFORCEHOST= "{{ ansible_host }}"
+      
+    - name: Setup the environment
+      shell: echo $LSFORCEHOST
+      
+    - name: Copy The License File
+      copy: 
+        src: /home/sdnoansi/group_automation/eceare/files/license.lic
+        dest: /var/lib/licensing
+    
+    - name: Load the License File
+      shell: lslic -F /var/lib/licensing/license.lic
+      
+    - name: Verify The Loaded License
+      shell: lsmon "{{ ansible_host }}"
+      register: license_detail
+
+    - debug: var=license_detail
+       

@@ -1,0 +1,32 @@
+---
+- name: Setup for Upgrade
+  hosts: primary-controller 
+  become: yes
+  become_user: root
+  tasks:
+    - name: Check Disk Usage ECE patch directory
+      shell: df -kh
+      register: disk_space
+      
+    - debug:
+        var: disk_space.stdout_lines
+
+    - name: perform healthcheck
+      command: /bin/check-ece-health
+      register: healthcheck
+      failed_when: false
+      no_log: True
+
+    - name: healthcheck output
+      debug: 
+        var: healthcheck.stdout_lines        
+
+    - name: Gluster Volume Check
+      command: gluster volume heal clustervol info
+      register: gluster_volume
+    
+    - debug: 
+        var: gluster_volume.stdout_lines
+        
+    - name: Print Alarms
+      shell: printActiveAlarms > /var/tmp/alarm_list.log

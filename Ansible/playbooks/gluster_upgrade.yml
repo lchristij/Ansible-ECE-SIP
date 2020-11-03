@@ -1,0 +1,68 @@
+---
+- name: Gluster Upgrade Procedure
+  hosts: controllers
+  become: yes
+  become_user: root
+  tasks: 
+    - name: Stop Gluster services
+      systemd:
+        name: glusterd.service
+        state: stopped
+    
+    - name: Kill gluster
+      shell: killall glusterfs glusterfsd
+      
+    - name: Restart glusterfs client
+      systemd:
+        name: rda-glusterfs-client.service
+        state: restarted
+        
+    - name: Backup Config
+      shell: cp /usr/lib/deployment_profiles/DP-Glusterfs-Server/config.in /usr/lib/deployment_profiles/DP-Glusterfs-Server/config.in.bak
+
+    - name: gpg-check to be "0"
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/files/ece-patch.repo
+        dest: /cluster/ece-patch-tool/ece-patch.repo 
+      
+    - name: Upgrade
+      shell: echo y | yum upgrade DP-Glusterfs-Server
+
+    - name: Restore Config
+      shell: cp /usr/lib/deployment_profiles/DP-Glusterfs-Server/config.in.bak /usr/lib/deployment_profiles/DP-Glusterfs-Server/config.in
+    
+    - name: Check version
+      shell: gluster --version
+      register: gluster_version
+    
+    - debug: 
+        var: gluster_version
+    
+    - name: Reload Daemon
+      systemd:
+        daemon_reload: yes
+
+    - name: Start Gluster Service
+      systemd:
+        name: glusterd
+        state: started
+
+    - name: Restart glusterfs client
+      systemd:
+        name: rda-glusterfs-client.service
+        state: restarted
+    
+    - name: Copy Gluster script
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/scripts/gluster_commands.sh
+        dest: /cluster/
+    
+    - name: Gluster Scripts 
+      shell: sh /cluster/gluster_commands.sh > /var/tmp/gluster_output.log
+    
+    - name: Enhance the health check and GlusterFS configuration to take effect
+      shell: python /cluster/ece_patches/ECE18.3-EP19/after_upgrade_dp_glusterfs_server.py
+      register: post_upgrade_log
+
+    - debug:
+        var: post_upgrade_log

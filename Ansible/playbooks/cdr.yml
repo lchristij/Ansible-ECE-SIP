@@ -1,0 +1,64 @@
+---
+- name: Cdrfile-ra Component Install
+  hosts: traffic
+  become: yes
+  become_user: root
+  serial: 1
+  order: sorted
+  tasks:
+    - name: Copy RPM
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/packages/cdrfile-ra-ece-rda-{{ cdrfile_version }}.rpm
+        dest: /cluster/home/sw_deliveries/
+
+    - name: Install Cdrfile-ra rpm
+      yum: 
+        name: /cluster/home/sw_deliveries/cdrfile-ra-ece-rda-{{ cdrfile_version }}.rpm
+        state: present
+        
+    - name: Component HealthCheck
+      command: component check_health -dp=DP-NGIN-JBOSS-Traffic
+      register: health_check_ngin_jboss
+    
+    - debug: 
+        var: health_check_ngin_jboss..stdout_lines
+      
+    - name: Stop JBOSS Traffic
+      systemd:
+        state: stopped
+        name: DP-NGIN-JBOSS-Traffic
+
+    - name: Wait for JBOSS to stop
+      pause:
+        seconds: 30
+    
+    - name: Copy Configuration
+      copy:
+        src: /home/sdnoansi/group_automation/eceare/files/standalone_{{ ansible_host }}.xml
+        dest: /var/lib/jboss/domains/DP-NGIN-JBOSS-Traffic_{{ ansible_host }}/configuration/standalone.xml        
+
+    - name: Start JBOSS Traffic
+      systemd:
+        state: started
+        name: DP-NGIN-JBOSS-Traffic
+
+    - name: Create Tempfile For Log Tailing
+      tempfile:
+        state: file
+      register: tempfile
+      
+    - name: Asynchronous Tail Log To Temp File 
+      shell: tailf /var/lib/jboss/domains/DP-NGIN-JBOSS-Traffic_{{ ansible_host }}/log/server.log | grep --line-buffered "JBAS015874" >> {{ tempfile.path }}
+      async: 600
+      poll: 0
+ 
+    - name: Wait For Regex In Log
+      wait_for:
+        path: "{{ tempfile.path }}"
+        search_regex: 'JBAS015874'
+
+    - name: Remove Tempfile
+      file:
+        path: "{{ tempfile.path }}"
+        state: absent
+

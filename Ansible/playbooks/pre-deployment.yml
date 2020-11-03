@@ -1,0 +1,29 @@
+---
+- name: Pre Deployment Check
+  hosts: primary-controller
+  become: yes
+  become_user: root
+  tasks:
+    - name: perform healthcheck
+      command: check-ece-health
+      register: healthcheck
+      failed_when: false
+      no_log: True
+
+    - name: healthcheck output
+      debug: 
+        var: healthcheck.stdout_lines
+ 
+    - name: Check consul members
+      command: consul members
+      register: consul_members
+
+    - debug:
+        var: consul_members.stdout_lines
+      
+    - name: List the nodes
+      command: cluster-cli list-node-state
+      register: node_state
+    
+    - debug: 
+        var: node_state.stdout_lines
